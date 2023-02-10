@@ -11,20 +11,25 @@
   ↓↓↓↓↓*/
 
 function testReAnswer() {
-    reAnswer("1725596821", 'q1_answer', "Другое значение")
+    reAnswer("1725596821", 'q1', "Ещё значение")
 }
 
 /* ↑↑↑↑↑
 ОБЛАСТЬ ТЕСТОВ
 */
 
-function reAnswer(telegram_ID, column_title, newValue) {
+function reAnswer(telegram_ID, column_title, newValue, check) {
 
     titles.forEach(function(title) {
         for (i = 0; i < title.length; i++) {
             if (title[i] == column_title) {
-                trigger(telegram_ID, "rewrite")
+              trigger(telegram_ID, "rewrite")
+              let oldVal = sheetId.getRange(position+1, i+1).getValue()
+              if ((oldVal == "") || (check == "is_status")) {
                 sheetId.getRange(position+1, i+1).setValue(newValue)
+              } else {
+                sheetId.getRange(position+1, i+1).setValue(oldVal + "; " + newValue)
+              }
             }
         }
     });

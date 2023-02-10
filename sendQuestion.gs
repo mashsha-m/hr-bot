@@ -1,5 +1,5 @@
 /**
- * Функция отправляет сообщение пользователю, используя JSON формат
+ * Функция отправляет вопрос пользователю
  * @param {number} id id пользователя, которому будет отправлено сообщение
  * @param {string} text текст для сообщения
  * @param {string} keyBoard опциональное меню-клавиатура
@@ -10,22 +10,34 @@
   ОБЛАСТЬ ТЕСТОВ
   ↓↓↓↓↓*/
 
-function testSend() {
-    sendText("1769978686", "Hello, World!", FIRST_Q)
+function testSendQ() {
+    sendQ("1769978686", "q2", FORCE_REPLY)
 }
 
 /* ↑↑↑↑↑
 ОБЛАСТЬ ТЕСТОВ
 */
 
-function sendText(id, text, keyBoard) {
+function sendQ(id, column_title, keyBoard) {
+
+    let question = "";
+
+    //qTitles.forEach(function(title) {
+        for (i = 0; i < qTitles.length; i++) {
+            if (qTitles[i] == column_title) {
+              question = questions[i][0];
+             //Logger.log(questions[i][0])
+            }
+        }
+    //});
+
     // отправляемые данные
     let data = {
         method: "post",
         payload: {
             method: "sendMessage",
             chat_id: String(id),
-            text: text,
+            text: question,
             parse_mode: "HTML",
             reply_markup: JSON.stringify(keyBoard)
         }

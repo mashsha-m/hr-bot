@@ -42,8 +42,5 @@ function trigger(id, action) {
                 end = true;
             }
         }
-        if (end == true) {
-            break;
-        }
     }
 }
