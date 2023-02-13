@@ -31,17 +31,18 @@ function findColTitle(telegram_ID) {
           sheetId.getRange(position+1, i+1).setValue("=COLUMN()");
           emptyGet = sheetId.getRange(position+1, i+1).getValue(); 
           sheetId.getRange(position+1, i+1).setValue("");
+               // Logger.log(emptyGet)
           break;
-        }
+        } 
       }
       //return Logger.log(emptyGet);
     titles.forEach(function(title) {
         for (i = 0; i < title.length; i++) {
             if (i+1 == emptyGet) {
               // заполняемый столбец
-                column_title = title[i];
+                return column_title = title[i];
+          //sendText(telegram_ID, column_title)
                 //sendText(telegram_ID, column_title+" - закончился вопрос")
-                Logger.log(column_title)
                 let emptyGet = i;
             }
         }

@@ -6,6 +6,10 @@ const sheetId = SpreadsheetApp.openById("1Wsg45k-KBy28AP-LM2WfSzHjpu-68JCrpjAs2K
 const sheetIdQuestions = SpreadsheetApp.openById("1Wsg45k-KBy28AP-LM2WfSzHjpu-68JCrpjAs2K3U9kE").getSheetByName("Вопросы");
 // таблица для тестов
 const sheetIdTest = SpreadsheetApp.openById("1va3441tSiz0z0lrZFwH5pBYUoxRENWbWZwtmjlPK2Qc").getSheetByName("Mess");
+// регулярное выражение для email EMAIL_REGEXP.test(email)
+const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
+// регулярное выражение для телефона
+const PHONE_REGEXP = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/iu;
 // координата колонки, для которой делается запись
 let position = 0;
 // название заполняемой колонки 
@@ -43,7 +47,7 @@ let dateFormat = getYear + "." + getMonth + "." + getDay + " " + getHours;
 
 function getMe() {
   let request = UrlFetchApp.fetch("https://api.telegram.org/bot"+token+"/getMe");
-  console.log(qTitles[4]);
+  console.log(request);
 }
 
 function setWebhook() {

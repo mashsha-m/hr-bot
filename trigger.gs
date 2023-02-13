@@ -10,7 +10,7 @@
   ↓↓↓↓↓*/
 
 function testTrigger() {
-    trigger("1769978686")
+    trigger("1769978686", "object")
 }
 
 /* ↑↑↑↑↑
@@ -23,24 +23,28 @@ function trigger(id, action) {
     let end = false;
     // массив с id всех пользователей
     let range = sheetId.getRange(1, 1, sheetId.getLastRow(), 1).getValues();
+                    //Logger.log(range)
 
     for (let i = 0; i < range.length; i++) {
-        for (let j = 0; j < range[i].length; j++) {
-            if (range[i][j] == id) {
+        //for (let j = 0; j < range[i].length; j++) {
+            if (range[i][0] == id) {
                 // вычислить координату строки пользователя
                 if (action == "rewrite") {
                     position = i;
                 }
                 // составить объект из данных по соответствующему пользователю
                 if (action == "object") {
-                    arr = sheetId.getRange(i+1, j+1, 1, sheetId.getLastColumn()).getValues();
-                    arr.forEach(logValue);
+                    arr = sheetId.getRange(i+1, 1, 1, sheetId.getLastColumn()).getValues();
+                    //arr.forEach(logValue);
                 }
                 if (action == null) {
                     Logger.log("Всё получилось")
                 }
                 end = true;
             }
+        //}
+        if (end == true) {
+            break;
         }
     }
 }

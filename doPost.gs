@@ -47,7 +47,7 @@ function doPost(e) {
     // username пользователя
     let username = contents.message.chat.username;
     //sendText(id, "сейчас начну")
-    sheetIdTest.getRange(10, 1).setValue(JSON.stringify(contents, null, 5));
+    //sheetIdTest.getRange(10, 1).setValue(JSON.stringify(contents, null, 5));
     if (contents.message.photo) {
       sendText(id, "картинку поймал")
       // переменная берет id картинки с самым большим качеством из пришедших данных 
@@ -81,15 +81,18 @@ function doPost(e) {
         trigger(id, "rewrite")
         findColTitle(id)
         //return sendText(id, emptyGet)
-        //let column_title = sheetId.getRange(1, emptyGet).getValue();
+        let isset_photo = sheetId.getRange(position+1, 26).getValue();
         let current_status = sheetId.getRange(position+1, 3).getValue();
         //sendText(id, current_status)
-        if (column_title == "q11") {
+        // ---------------------------------------------------------- Эта фича не работает, на 11 шаге он принимает команду /next и заканчивает вопрос
+        if (column_title == "q11_end" && isset_photo == "") {
           return sendText(id, 'Это последний вопрос, на него будет приниматься только скриншот')
-        }
-        if (column_title == current_status) {
+        } else if (column_title == current_status) {
           return sendText(id, 'Вы не ответили на предыдущий вопрос. Пожалуйста, ответьте или напишите в ответ "Готово", а после отправьте /next');
-        } 
+        } else if (column_title == "") {
+          //theEnd(id)
+          return timer(id)
+        }
         reAnswer(id, column_title, dateFormat)
         findColTitle(id)
         //sendText(id, column_title+" - следующий вопрос")
@@ -97,15 +100,14 @@ function doPost(e) {
         for (let i = 0; i < qTitles.length; i++) {
           if (qTitles[i] == column_title) {
         //sendText(id, i)
-            reAnswer(id, "status", column_title, "is_status")
-            sendQ(id, column_title, FORCE_REPLY)
-            break;
+          reAnswer(id, "status", column_title, "is_status")
+          return sendQ(id, column_title, FORCE_REPLY)
           }
         }
       }
     } else {
       if (text == "Прочитано" || text == "прочитано") {
-        sendQ(id, "check", FORCE_REPLY)
+        return sendQ(id, "check", FORCE_REPLY)
       } else if (text == "Поехали" || text == "поехали") {
           trigger(id, "rewrite")
           let current_title = sheetId.getRange(position+1, 3).getValue();
@@ -115,9 +117,10 @@ function doPost(e) {
           sendQ(id, "get_link")
           sendQ(id, "timer", FORCE_REPLY)
           reAnswer(id, titles[0].at(-3), ("["+dateFormat+"] "+text), "is_status")
-          reAnswer(id, "status", "last", "is_status")
+          return reAnswer(id, "status", "last", "is_status")
+          //timer("start")
       } else if (words.includes(text)) {
-        sendText(id, "Спасибо! (´｡• ω •｡`)")
+        return sendText(id, "Спасибо! (´｡• ω •｡`)")
       } else {
         trigger(id, "rewrite")
         if (position == 0) {
@@ -125,10 +128,31 @@ function doPost(e) {
         }
         let current_title = sheetId.getRange(position+1, 3).getValue();
         if (current_title == "last") {
-          return false;
+          let current_photo = sheetId.getRange(position+1, 26).getValue();
+          if (current_photo == "") {
+            return sendText(id, "Это не скриншот. Пришли, пожалуйста скриншот.")
+          }
+        } else if (current_title == "q2") {
+          if (PHONE_REGEXP.test(text) == false) {
+            return sendText(id, "Номер телефона не валиден")
+          } else {
+            return reAnswer(id, current_title, "["+dateFormat+"] "+text);
+          }
+        } else if (current_title == "q3") {
+          if (EMAIL_REGEXP.test(text) == false) {
+            return sendText(id, "Email не валиден")
+          } else {
+            return reAnswer(id, current_title, "["+dateFormat+"] "+text);
+          }
+        } else if (current_title == "q4") {
+          if (text) {
+            return sendText(id, "Это не файл.")
+          }
+        } else if (current_title == "q11") {
+          return sendText(id, 'Это последний вопрос, на него будет приниматься только скриншот')
         } else {
           if (text !== "") {
-              return reAnswer(id, current_title, "["+dateFormat+"] "+text);
+            return reAnswer(id, current_title, "["+dateFormat+"] "+text);
           }
         }
       }
