@@ -35,16 +35,13 @@ function findColTitle(telegram_ID) {
           break;
         } 
       }
-      //return Logger.log(emptyGet);
+      
     titles.forEach(function(title) {
         for (i = 0; i < title.length; i++) {
             if (i+1 == emptyGet) {
-              // заполняемый столбец
-                return column_title = title[i];
-          //sendText(telegram_ID, column_title)
-                //sendText(telegram_ID, column_title+" - закончился вопрос")
-                let emptyGet = i;
+              column_title = title[i];
             }
         }
     });
+
 }

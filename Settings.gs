@@ -6,7 +6,7 @@ const sheetId = SpreadsheetApp.openById("1Wsg45k-KBy28AP-LM2WfSzHjpu-68JCrpjAs2K
 const sheetIdQuestions = SpreadsheetApp.openById("1Wsg45k-KBy28AP-LM2WfSzHjpu-68JCrpjAs2K3U9kE").getSheetByName("Вопросы");
 // таблица для тестов
 const sheetIdTest = SpreadsheetApp.openById("1va3441tSiz0z0lrZFwH5pBYUoxRENWbWZwtmjlPK2Qc").getSheetByName("Mess");
-// регулярное выражение для email EMAIL_REGEXP.test(email)
+// регулярное выражение для email
 const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
 // регулярное выражение для телефона
 const PHONE_REGEXP = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/iu;
@@ -15,8 +15,6 @@ let position = 0;
 // название заполняемой колонки 
 let column_title = "";
     let emptyGet = 0;
-// текущий вопрос
-const status = sheetId.getRange(1,4,1, sheetId.getLastColumn()).getValues()[0];
 // массив из заголовков колонок, из которых будет вычисляться нужная для записи
 const titles = sheetId.getRange(1, 1, 1, sheetId.getLastColumn()).getValues();
 // массив из заголовков вопросов для вывода
@@ -24,7 +22,7 @@ const qTitles = sheetIdQuestions.getRange(2, 1, sheetIdQuestions.getLastRow(), 1
 // массив из вопросов для вывода
 const questions = sheetIdQuestions.getRange(2, 2, sheetIdQuestions.getLastRow(), 2).getValues();
 // массив слов для принятия благодарности
-const words = ["Молодец", "молодец", "молодец!", "Молодец!", "хвалю", "Хвалю", "хвалю!", "Хвалю!"];
+const words = ["Молодец", "молодец", "молодец!", "Молодец!", "хвалю", "Хвалю", "хвалю!", "Хвалю!", "умничка", "Умничка"];
 // объект с данными пользователя
 let answers = {
   telegram_ID: "",

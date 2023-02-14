@@ -2,7 +2,7 @@
  * Функция подготавливает картинку к загрузке в таблицу и файл к загрузке на гугл
  * @param {string} file_id id изображения
  * @param {number} telegram_ID id пользователя
- * @return путь картинки с сервера telegram
+ * @return {string} file_path путь картинки с сервера telegram
  */
 
 /*
@@ -40,7 +40,7 @@ function getFile(file_id, telegram_ID) {
     sendText(telegram_ID, "готово")
 
   } else if (file_path.includes("file") == true) {
-    //sendText(telegram_ID, "поймал название")
+    
     insertFileToCell(file_path, telegram_ID);
 
   }

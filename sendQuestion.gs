@@ -22,14 +22,11 @@ function sendQ(id, column_title, keyBoard) {
 
     let question = "";
 
-    //qTitles.forEach(function(title) {
-        for (i = 0; i < qTitles.length; i++) {
-            if (qTitles[i] == column_title) {
-              question = questions[i][0];
-             //Logger.log(questions[i][0])
-            }
+    for (i = 0; i < qTitles.length; i++) {
+        if (qTitles[i] == column_title) {
+          question = questions[i][0];
         }
-    //});
+    }
 
     // отправляемые данные
     let data = {

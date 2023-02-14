@@ -26,23 +26,23 @@ function trigger(id, action) {
                     //Logger.log(range)
 
     for (let i = 0; i < range.length; i++) {
-        //for (let j = 0; j < range[i].length; j++) {
-            if (range[i][0] == id) {
-                // вычислить координату строки пользователя
-                if (action == "rewrite") {
-                    position = i;
-                }
-                // составить объект из данных по соответствующему пользователю
-                if (action == "object") {
-                    arr = sheetId.getRange(i+1, 1, 1, sheetId.getLastColumn()).getValues();
-                    //arr.forEach(logValue);
-                }
-                if (action == null) {
-                    Logger.log("Всё получилось")
-                }
-                end = true;
-            }
-        //}
+          if (range[i][0] == id) {
+              // вычислить координату строки пользователя
+              if (action == "rewrite") {
+                  position = i;
+              }
+              // составить объект из данных по соответствующему пользователю
+              if (action == "object") {
+                  arr = sheetId.getRange(i+1, 1, 1, sheetId.getLastColumn()).getValues();
+                  //arr.forEach(logValue);
+                  Logger.log(arr)
+              }
+              // проверка функции
+              if (action == null) {
+                  Logger.log("Всё получилось")
+              }
+              end = true;
+          }
         if (end == true) {
             break;
         }
