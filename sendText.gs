@@ -25,6 +25,7 @@ function sendText(id, text, keyBoard) {
         payload: {
             method: "sendMessage",
             chat_id: String(id),
+            action: 'typing',
             text: text,
             parse_mode: "HTML",
             reply_markup: JSON.stringify(keyBoard)

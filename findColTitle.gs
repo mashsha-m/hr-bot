@@ -40,6 +40,7 @@ function findColTitle(telegram_ID) {
         for (i = 0; i < title.length; i++) {
             if (i+1 == emptyGet) {
               column_title = title[i];
+              //sendText(telegram_ID, column_title)
             }
         }
     });

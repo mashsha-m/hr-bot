@@ -6,6 +6,8 @@ const sheetId = SpreadsheetApp.openById("1Wsg45k-KBy28AP-LM2WfSzHjpu-68JCrpjAs2K
 const sheetIdQuestions = SpreadsheetApp.openById("1Wsg45k-KBy28AP-LM2WfSzHjpu-68JCrpjAs2K3U9kE").getSheetByName("Вопросы");
 // таблица для тестов
 const sheetIdTest = SpreadsheetApp.openById("1va3441tSiz0z0lrZFwH5pBYUoxRENWbWZwtmjlPK2Qc").getSheetByName("Mess");
+// id папки для загрузки файлов
+const folderId = "1ngsjSu3vwPVLMg88f3tamgcD32xYAuRK";
 // регулярное выражение для email
 const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
 // регулярное выражение для телефона

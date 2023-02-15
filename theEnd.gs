@@ -46,8 +46,7 @@ function theEnd(id) {
   let difference = (dat1 - dat2) / 1000
 
   if (difference > 2700) {
-    sendText(id, "Слишком поздно. Время вышло. Тестирование завершено.")
-    return reAnswer(id, "photo", "", "is_status")
+    return sendText(id, "Слишком поздно. Время вышло. Тестирование завершено.")
   } else {
     return sendText(id, "Спасибо за своевременное выполнение задания! Результаты будут переданы Анатолию на рассмотрение.");
   }

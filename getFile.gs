@@ -19,6 +19,11 @@ function testGetFile() {
 
 function getFile(file_id, telegram_ID) {
 
+  trigger(telegram_ID, "rewrite")
+
+  // вычисляем текущий статус вопроса
+  let current_status = sheetId.getRange(position+1, 3).getValue();
+
   // метод getFile берет данные изображения с сервера telegram
   let file_fetch = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/getFile?file_id='+ file_id);
 
@@ -30,18 +35,14 @@ function getFile(file_id, telegram_ID) {
   
   if (file_path.includes("documents") == true) {
 
-    sendText(telegram_ID, "полшло дело")
+    //sendText(telegram_ID, "полшло дело")
     let doc = 'https://api.telegram.org/file/bot' + String(token) + '/' + String(file_path);
-    reAnswer(telegram_ID, "q4", doc)
     //sendText(telegram_ID, "собралась doc")
-    let docUrl = UrlFetchApp.fetch(doc).getBlob()
-    sendText(telegram_ID, "собралась docUrl")
-    let step1 = DriveApp.getFileById("1ngsjSu3vwPVLMg88f3tamgcD32xYAuRK").createFile(docUrl)
-    sendText(telegram_ID, "готово")
+    createFile(doc, telegram_ID, file_path, current_status)
 
   } else if (file_path.includes("file") == true) {
     
-    insertFileToCell(file_path, telegram_ID);
+    insertImageToCell(file_path, telegram_ID, current_status);
 
   }
 }

@@ -3,6 +3,7 @@
  * @param {string} telegram_ID id пользователя, по которому код ищет строку, в которой будет происходить запись
  * @param {string} column_title название колонки, по которому код ищет колонку, в которой будет происходить запись
  * @param {string} newValue значение, которое будет записываться в ячейку
+ * @param {string} check дополнительный параметр для регулирования вывода функции
  * @return запись в таблицу по вычисленным координатам
  */
 
@@ -28,7 +29,12 @@ function reAnswer(telegram_ID, column_title, newValue, check) {
               if ((oldVal == "") || (check == "is_status")) {
                 sheetId.getRange(position+1, i+1).setValue(newValue)
               } else {
-                sheetId.getRange(position+1, i+1).setValue(oldVal + "; " + newValue)
+                sheetId.getRange(position+1, i+1).setValue(oldVal + "\n" + newValue)
+              }
+               if ((check == "is_date") || (column_title == "status") || (column_title == "q11_end") || (column_title == "photo")) {
+                break;
+              } else {
+                return sendText(telegram_ID, "Ответ записан. Когда закончишь отвечать, нажми /next")
               }
             }
         }

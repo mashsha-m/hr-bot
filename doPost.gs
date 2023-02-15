@@ -40,34 +40,33 @@ function doPost(e) {
 
     // username пользователя
     let username = contents.message.chat.username;
-    
-    // отлов картинки
-    if (contents.message.photo) {
 
-      // переменная берет id картинки с самым большим качеством из пришедших данных 
-      let file_id = contents.message.photo.at(-1).file_id;
+    // объект из картинки
+    let file = contents.message.photo;
 
-      getFile(file_id, id)
-
-    }
-
-    // отлов документа
-    if (contents.message.document) {
-      
-      // переменная берет id документа
-      let doc_id = contents.message.document.file_id;
-
-      getFile(doc_id, id);
-
-    }
+    // объект из документа
+    let document = contents.message.document;
 
     // проверка на тг команду
     if ((/^\//.exec(text))) {
 
         if (text === '/start') {
 
-          // вывод приветствия
-          sendText(id, sheetIdQuestions.getRange(1,2).getValue())
+          // по этой команде идет проверка, что пользователь ещё не записан в базу
+
+          trigger(id, "rewrite")
+
+          if (position == 0) {
+
+            // вывод приветствия
+            sendText(id, sheetIdQuestions.getRange(1,2).getValue())
+            
+          } else {
+
+            // если записан, то программа не отправит приветствие заново
+            return sendText(id, "Мы уже знакомы.");
+            
+          }
 
         } else if (text === '/begin') {
           
@@ -86,29 +85,8 @@ function doPost(e) {
           } else {
 
             // если записан, то программа не даст ему начать заново
-            return sendText(id, "На тестирование дается одна попытка.");
+            return sendText(id, "Ты уже начинал тестирование.");
             
-          }
-
-        } else if (text === '/finish') {
-
-          // проверка на выполнение только одного сценария
-          let check = true;
-
-          trigger(id, "object")
-
-          // код перебирает массив ответов пользователя и проверяет, что все вопросы отвечены
-          arr[0].forEach(function (element) {
-            if (element == "") {
-
-              check = false;
-              return sendText(id, "Тестирование ещё не закончено.")
-
-            }
-          });
-
-          if (check == true) {
-            return theEnd(id)
           }
 
         } else if (text === '/next') {
@@ -124,9 +102,9 @@ function doPost(e) {
         let current_status = sheetId.getRange(position+1, 3).getValue();
         
         // получаем текущее значение в столбце для фото 
-        let current_photo = sheetId.getRange(position+1, 26).getValue();
+        //let current_photo = sheetId.getRange(position+1, 26).getValue();
         
-        if (column_title == "q11_end" && current_photo == "") {
+        if (column_title == "q11_end") {
           // тестирование завершено
 
           // защита, если пользователь пытается закончить тестироавние без скриншота
@@ -134,13 +112,14 @@ function doPost(e) {
 
         } else if (column_title == current_status) {
 
-          // если незаполненное поле совпадает с текущим вопросом, то выводим сообщение
-          return sendText(id, 'Последний вопрос остался без ответа. Пожалуйста, ответьте или напишите в ответ "Готово", а после отправьте /next');
+          // если незаполненное поле совпадает с текущим вопросом, то выводим сообщение и вопрос
+          sendText(id, 'Последний вопрос остался без ответа.');
+          return sendQ(id, column_title, FORCE_REPLY)
 
         } 
 
         // при наличии ответа, в следующую ячейку (*вопрос*_end) записываем дату, когда на вопрос закончили отвечать
-        reAnswer(id, column_title, dateFormat)
+        reAnswer(id, column_title, dateFormat, "is_date")
 
         findColTitle(id)
 
@@ -167,11 +146,33 @@ function doPost(e) {
 
       // в это условие приходит строковое сообщение от пользователя
 
+      // отлов картинки
+      if (file) {
+
+        // переменная берет id картинки с самым большим качеством из пришедших данных 
+        let file_id = file.at(-1).file_id;
+
+        getFile(file_id, id)
+
+      }
+
+      // отлов документа
+      if (document) {
+        
+        // переменная берет id документа
+        let doc_id = document.file_id;
+
+        getFile(doc_id, id);
+
+      }
+
       // проверка на ключевые слова
       if (text == "Прочитано" || text == "прочитано") {
         
         // отправляем вопрос по сценарию
-        return sendQ(id, "check", FORCE_REPLY)
+        sendQ(id, "check", FORCE_REPLY)
+
+        return reAnswer(id, "status", "read", "is_status")
 
       } else if (text == "Поехали" || text == "поехали") {
 
@@ -183,7 +184,7 @@ function doPost(e) {
           // защита от перезаписи даты для последнего вопроса
           if (current_title == "last") {
 
-            return sendText(id, "Задание уже выполняется")
+            return sendText(id, "Задание уже выполняется.")
 
           }
 
@@ -192,7 +193,7 @@ function doPost(e) {
           sendQ(id, "timer", FORCE_REPLY)
 
           // записываем последнее сообщение ради записи даты вопроса
-          reAnswer(id, titles[0].at(-3), ("["+dateFormat+"] "+text), "is_status")
+          reAnswer(id, titles[0].at(-3), ("["+dateFormat+"] "+text), "is_date")
 
           // присваиваем последний статус вопроса для защиты
           return reAnswer(id, "status", "last", "is_status")
@@ -217,26 +218,13 @@ function doPost(e) {
         // получаем текущий статус вопроса
         let current_title = sheetId.getRange(position+1, 3).getValue();
 
-        // проверки на последнем этапе тестирования
-        if (current_title == "last") {
-
-          // получаем текущее значение в столбце для фото 
-          let current_photo = sheetId.getRange(position+1, 26).getValue();
-
-          // проверка, если на последнем вопросе при отсутствии фотографии пытаются отправить текст
-          if (current_photo == "") {
-            return sendText(id, "Это не скриншот. Пришли, пожалуйста скриншот.")
-          } else {
-            return sendText(id, 'Чтобы завершить тестирование, отправь /finish')
-          }
-
-        } else if (current_title == "q2") {
+        // проверки на каждом этапе тестирования
+        if (current_title == "q2") {
 
           // проверка номера телефона на валидность при 2 вопросе
           if (PHONE_REGEXP.test(text) == false) {
             return sendText(id, "Формат номера не подходит.")
           } else {
-            sendText(id, "Всё хорошо!")
             return reAnswer(id, current_title, "["+dateFormat+"] "+text);
           }
 
@@ -246,7 +234,6 @@ function doPost(e) {
           if (EMAIL_REGEXP.test(text) == false) {
             return sendText(id, "Формат email не подходит.")
           } else {
-            sendText(id, "Всё хорошо!")
             return reAnswer(id, current_title, "["+dateFormat+"] "+text);
           }
 
@@ -260,12 +247,30 @@ function doPost(e) {
         } else if (current_title == "q11") {
 
           // защита при попытке отправить текст вместо скриншота на 11 вопросе
-          return sendText(id, 'Это последний вопрос, на него будет приниматься только скриншот.')
+          return sendText(id, 'Если задание прочитано и понято, то напиши боту: "Прочитано".')
+
+        } else if (current_title == "read") {
+
+          // защита при попытке отправить текст вместо скриншота на 11 вопросе
+          return sendText(id, 'Начинаем? Если да, то напиши "Поехали" и ты получишь ссылку на тест.')
+
+        } else if (current_title == "last") {
+
+          // получаем текущее значение в столбце для фото 
+          let current_photo = sheetId.getRange(position+1, 26).getValue();
+
+          // проверка, если на последнем вопросе при отсутствии фотографии пытаются отправить текст
+          if (current_photo == "") {
+            return sendText(id, "Это не скриншот. Пришли, пожалуйста скриншот.")
+          } else {
+            //return sendText(id, 'Чтобы завершить тестирование, отправь /next')
+            return false;
+          }
 
         } else {
 
           // после всех проверок ответ записывается только в том случае, когда он содержит текст
-          if (text !== "") {
+          if ((text !== "") && (typeof document === 'undefined') && (typeof file === 'undefined')) {
             //sendText(id, text)
             return reAnswer(id, current_title, "["+dateFormat+"] "+text);
           }

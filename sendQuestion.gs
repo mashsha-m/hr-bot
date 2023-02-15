@@ -34,6 +34,7 @@ function sendQ(id, column_title, keyBoard) {
         payload: {
             method: "sendMessage",
             chat_id: String(id),
+            action: 'typing',
             text: question,
             parse_mode: "HTML",
             reply_markup: JSON.stringify(keyBoard)
